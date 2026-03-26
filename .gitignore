@@ -1,0 +1,8 @@
+node_modules/
+.vh_sandbox/
+.env
+tests/dummy.js
+harness.yaml
+AGENTS.md
+ACTION_LOG.md
+docs/architecture.md
