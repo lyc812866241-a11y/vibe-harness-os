@@ -1,75 +1,114 @@
-# 🐎 Vibe-Harness-OS (VH-OS)
+# Vibe-Harness-OS (VH-OS)
 
-> **“用物理的笼子装下无限的涌现，用冷酷的契约剥夺智能的侥幸。”**
-
-VH-OS 是一个基于 **“围场自治模型 (The Paddock Model)”** 设计的 **第三阶 Agent 工程执行引擎**。它旨在彻底终结大模型在复杂软件工程中不可控的幻觉与越界行为。
+[English](#english) | [中文](#中文)
 
 ---
 
-## 🛑 到底解决了什么问题？
+<h2 id="english">English</h2>
 
-随着项目变大，传统使用 AI 写代码（如 Cursor, Roo Code）必然会遭遇以下三大死局：
-1. **上下文爆炸与智商降级**：为了让 AI 懂项目，开发者把几千字的开发规范、数据库表结构全塞进 `.clinerules` 或 Prompt 中，导致 AI 抓不住重点，胡乱匹配。
-2. **AI 暴走与代码雪崩（失控）**：让 AI “分步骤测试”，但它经常为了表现自己，一溜烟跑到大结局，把前后端带数据库全改了。一旦报错，整个项目结构瘫痪（即“心里没底”）。
-3. **架构腐化与单向依赖被打破**：AI 为了快速实现功能，经常写出跨层调用的“面条代码”（如 UI 层直接查数据库）。
+> *"Confining infinite emergence within physical boundaries; replacing reliance on AI alignment with strict mechanical contracts."*
 
----
+Vibe-Harness-OS (VH-OS) is a **Third-Order Agent Execution Engine** based on the **"Paddock Model"**. It is designed to solve the inherent unpredictability, context overload, and architectural degradation associated with using Large Language Models (LLMs) in complex software engineering projects.
 
-## 🧬 Agent 工程的三阶演进理论
+### 🛑 The Problem
 
-为了解决上述死局，工程思维必须经历三个阶段的进化。**本框架正是“三阶思维”的终极落地形态：**
+As software projects scale, traditional AI coding assistants (like Cursor, Roo Code) inevitably encounter three major bottlenecks:
+1. **Context Overload**: Developers attempt to inject massive architectural guidelines and database schemas into `.clinerules` or system prompts. This leads to context window saturation, causing the AI to lose focus and hallucinate.
+2. **Unconstrained Execution (Code Avalanches)**: When instructed to "test step-by-step," AI models often ignore constraints due to their generative nature, modifying the entire stack (UI, backend, database) simultaneously. A single error can break the entire application.
+3. **Architectural Degradation**: To achieve functional requirements quickly, AI often bypasses architectural layers (e.g., UI directly querying the database), leading to technical debt.
 
-### 一阶思维：混沌指令期 (Prompt-Driven)
-* **做法**：直接在聊天框对 AI 说：“帮我开发一个微信登录功能”。
-* **结果**：AI 疯狂输出 500 行代码，改了 10 个文件。一旦跑不通，人类需要花几个小时去 debug 它写的屎山。**完全靠天吃饭。**
+### 🧬 The Three Orders of Agent Engineering
 
-### 二阶思维：规范驾驭期 (Harness Engineering)
-* **做法**：人类开始写极长的 `.clinerules`，使用强烈的语气词：“请你务必一步一步来！”、“严禁修改现有核心文件！”、“写完代码必须先运行测试！”
-* **痛点**：**这本质上是一种“道德约束”。** 就像在管理一个不听话的员工，如果 AI 哪天“主观能动性”发作忽略了 Prompt，它依然能轻易摧毁你的项目。约束停留在文字表面。
+VH-OS represents the evolution of AI engineering methodologies:
 
-### 👑 三阶思维：物理固化期 (The Paddock OS) —— 本框架的核心
-* **做法**：放弃用文字去约束 AI，直接用 **底层代码（CLI 脚手架）** 构建一个物理隔离的“夹板”与“围场”。
-* **机制**：
-  * **物理断网**：AI 根本拿不到全域代码，引擎只给它拷贝当前节点允许看的文件（沙盒）。
-  * **机械判官**：不听话？直接跑测试脚本。Exit Code 不为 0，底层死循环拦截，根本不允许它的脏代码流进真实项目。人类只在外面看结果。
+*   **1st Order (Prompt-Driven)**: Directly asking the AI to "build a feature." Output is highly unpredictable and debugging is manual.
+*   **2nd Order (Harness Engineering)**: Writing exhaustive `.clinerules` to instruct the AI to "follow steps" and "not modify existing logic." **Limitation:** This is merely a "moral constraint." It relies entirely on the AI's adherence to instructions, which frequently fails.
+*   **3rd Order (Physical Isolation - VH-OS)**: Abandoning prompt-based constraints in favor of a **runtime sandbox**. The framework physically isolates the execution environment. The AI cannot access the entire codebase, and its output is mechanically blocked from merging unless it passes rigid test assertions.
 
----
+### 🌟 Core Mechanisms
 
-## 🌟 VH-OS 的四大核心机制
+1. **Router Protocol (Progressive Disclosure)**
+   Replaces bloated `.clinerules` with a minimal router index. The main Agent is forced to use `read_file` to fetch specific documentation (e.g., `docs/architecture.md`) only when needed.
+2. **Node-based Sandbox & TDD Loop**
+   AI-generated code is never merged directly. VH-OS creates an isolated `.vh_sandbox` and executes user-defined test assertions (`test_cmd`). If the test fails, the `stderr` is automatically fed back to the AI in an isolated loop (default: 5 retries) until it passes.
+3. **Pre-flight Customs (AST Validation)**
+   Even if tests pass, the framework runs AST and regex validations to ensure architectural integrity (e.g., preventing cross-layer imports or excessive file sizes) before allowing a merge to the main branch.
+4. **Dual-Agent Observer**
+   Upon successful merge, the framework automatically generates a Git snapshot and triggers a bypass agent to update `ACTION_LOG.md`. The main working Agent is never burdened with writing logs, maintaining pure context focus.
 
-1. **渐进式披露与路由协议 (Router Protocol)**
-   废弃巨型 `.clinerules`。通过 `vh onboard` 命令，自动将冗长的上下文转移到 `docs/` 中。外层的规则仅保留一行“地图索引”：*“遇事严禁瞎猜，查表去读 docs”*，杜绝上下文污染。
-2. **黑盒试错死循环 (The Paddock Loop)**
-   AI 生成代码后不会直接合入。框架会自动在 `.vh_sandbox` 中执行您定义的 `test_cmd`。跑不通？直接抓取 `stderr` 喂回给 AI，让它自己在沙盒里死循环（默认 5 次），直到跑通为止。
-3. **海关安检系统 (Pre-flight Customs)**
-   即便测试跑通，框架也会用 AST/正则进行强拦截。如果 AI 写了超过 500 行的臃肿文件，或者违反了架构的单向调用规则，海关直接打回重构，固化架构品味。
-4. **旁路日志与存档 (Dual-Agent Observer)**
-   当沙盒代码合入主干时，框架自动打上 Git Tag 存档。并唤醒“旁路扫地僧”去更新 `ACTION_LOG.md`。干活的 AI 永远不用自己写日记，保持了极高纯度的工作专注力。
+### 🚀 Quick Start
 
----
-
-## 🚀 极速上手 (Quick Start)
-
-### 1. 全局安装
+**1. Global Installation**
 ```bash
-# 在此源码目录下执行
 npm install
 sudo npm link
 ```
 
-### 2. 接管旧项目 (Project Onboarding)
-进入您真实的业务项目目录，执行：
+**2. Project Onboarding**
+Navigate to your existing project repository and run:
 ```bash
 vh onboard
 ```
-*引擎会瞬间将您的乱糟糟的野生项目，推平并重塑为符合“三阶围场”标准的架构，并安全隔离旧规则。*
+*This command automatically normalizes your project into the VH-OS standard structure, isolating legacy rules into `docs/` and generating sandbox environments.*
 
-### 3. 当厂长的日常
-在 Roo Code / Cursor 中提出需求，让其帮您配置好 `harness.yaml`。随后在终端敲下：
+**3. Execution**
+Define your task nodes in `harness.yaml`, then execute:
 ```bash
 vh run <node_id>
 ```
-**然后双手离开键盘**。享受黑盒自动试错、自动安检、自动合入的极致安全感。
 
-### 4. 全域看板
-输入 `vh` 或 `vh status`，随时掌控沙盒流转状态与最新存档。
+---
+
+<h2 id="中文">中文</h2>
+
+> *“用物理边界框定涌现能力，用自动化契约替代对 AI 自觉性的依赖。”*
+
+Vibe-Harness-OS (VH-OS) 是一个基于**“围场自治模型 (The Paddock Model)”**设计的**第三阶 Agent 执行引擎**。它旨在从底层解决大语言模型在复杂工程中常见的非预期修改、上下文过载以及架构腐化等核心问题。
+
+### 🛑 研发背景与痛点
+
+在大型项目中使用传统 AI 编程助手时，通常会面临三大瓶颈：
+1. **上下文过载**：为确保 AI 理解项目，开发者通常将大量架构规范和表结构堆砌在 `.clinerules` 或系统提示词中，导致 AI 注意力分散，频繁产生幻觉。
+2. **非预期修改与失控**：尽管提示词要求“分步执行”，但 AI 常因其生成特性忽略约束，进行全栈式的盲目修改。一旦出现局部错误，极易引发整个项目的结构性瘫痪。
+3. **架构防腐失效**：AI 为快速实现功能，往往会破坏既定的软件架构（例如在 UI 层直接发起数据库查询），迅速积累技术债务。
+
+### 🧬 Agent 工程的三阶演进
+
+VH-OS 是 Agent 工程方法论演进的最终形态：
+
+*   **一阶思维 (提示词驱动)**：直接向 AI 提出功能需求。产出极不稳定，完全依赖人类进行事后 Debug。
+*   **二阶思维 (规范约束)**：编写详尽的 `.clinerules`，要求 AI“按步骤执行”或“严禁修改核心文件”。**局限性**：这本质上是“道德约束”，完全依赖于 AI 对提示词的服从度，且极易失效。
+*   **三阶思维 (物理隔离与固化 - VH-OS)**：放弃通过自然语言约束 AI，转而构建基于底层代码的**物理执行环境**。AI 无法读取全域代码，且其产出必须通过强制的自动化测试，否则物理上禁止合入主干分支。
+
+### 🌟 核心机制
+
+1. **路由协议与渐进式披露 (Router Protocol)**
+   废除臃肿的全局规则。系统仅提供极简的目录索引，强制主体 Agent 在需要时通过 `read_file` 工具按需拉取特定文档（如 `docs/architecture.md`），确保上下文纯净。
+2. **沙盒环境与测试闭环 (TDD Loop)**
+   AI 生成的代码不会直接触碰主干。框架在隐藏的 `.vh_sandbox` 中运行代码并执行用户定义的断言测试 (`test_cmd`)。若测试失败，框架会自动提取 `stderr` 错误日志并返回给 AI 进行沙盒内重试（默认 5 次），直至通过。
+3. **海关安检系统 (Pre-flight Customs)**
+   测试通过后，框架将在合入前执行基于 AST（抽象语法树）的静态代码扫描，硬性拦截跨层调用或超大文件，保障架构的单向依赖原则。
+4. **旁路状态观测 (Dual-Agent Observer)**
+   沙盒代码成功合入主干后，框架自动执行 Git 快照存档，并唤醒旁路脚本更新 `ACTION_LOG.md`。主干活的 Agent 无需消耗 Token 记录日志，保持最高纯度的工作专注力。
+
+### 🚀 快速上手
+
+**1. 全局安装**
+```bash
+npm install
+sudo npm link
+```
+
+**2. 接入旧项目**
+进入您的业务项目根目录，执行以下命令：
+```bash
+vh onboard
+```
+*此命令将自动重构当前项目的规则文件，将臃肿的提示词剥离至 `docs/` 目录，并初始化标准的 VH-OS 围场结构。*
+
+**3. 启动节点任务**
+在 `harness.yaml` 中配置节点断言要求后，执行：
+```bash
+vh run <node_id>
+```
+*引擎将在后台自动完成沙盒隔离、试错闭环与代码合入。*
